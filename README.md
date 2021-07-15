@@ -37,4 +37,5 @@ This is the second project in the JavaScript track at The Odin Project. It uses 
 
 ## Log
 7/14/2021 Setup initial files and read me
+
 7/15/2021 Setup initial HTMl to build board and began JS using module pattern for gameboard and factory pattern for players
