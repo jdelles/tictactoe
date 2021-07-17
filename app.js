@@ -31,9 +31,9 @@ const Player = (name, token) => {
 }
 
 const intializeGame = (() => {
-    const player1name = alert("Enter player 1's name:"); 
+    const player1name = prompt("Enter player 1's name:"); 
     const player1 = Player(player1name, "X"); 
-    const player2name = alert("Enter player 2 name:"); 
-    const player2 = Player(player2name, "X"); 
+    const player2name = prompt("Enter player 2 name:"); 
+    const player2 = Player(player2name, "O"); 
     return {player1, player2}; 
 })(); 
