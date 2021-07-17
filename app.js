@@ -1,5 +1,6 @@
 const gameboard = (() => {
     const board = [9];  
+
     let turn = 0; 
     const getBoard = () => board; 
     const getTurn = () => turn; 
@@ -12,6 +13,13 @@ const gameboard = (() => {
             }
         } else {
             alert("This space is already taken. Choose another."); 
+        }
+    }
+    const getCurrentPlayer = () => {
+        if (turn % 2 === 0) {
+            return intializeGame.player1.getToken(); 
+        } else {
+            return intializeGame.player2.getToken(); 
         }
     }
     return {getBoard, getTurn, play}; 
@@ -35,5 +43,11 @@ const intializeGame = (() => {
     const player1 = Player(player1name, "X"); 
     const player2name = prompt("Enter player 2 name:"); 
     const player2 = Player(player2name, "O"); 
+
+    for (let i = 0; i < 9; i++) {
+        gameboard.board[i] = document.getElementById(`${i}`); 
+        gameboard.board[i].addEventListener('click', gameboard.play(i, getCurrentPlayer())); 
+    }
+
     return {player1, player2}; 
 })(); 

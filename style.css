@@ -18,3 +18,8 @@ button {
     color: transparent; 
     border: none; 
 }
+
+button:hover {
+    background: grey;
+    cursor: pointer; 
+}
