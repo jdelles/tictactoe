@@ -1,12 +1,19 @@
 const gameboard = (() => {
     const board = [9];  
+    const boardButtons = Array.from(document.querySelectorAll(".board"));
+    let i = 0; 
+    boardButtons.forEach(button => {
+        button.setAttribute("data-id", i);
+        // button.addEventListener("click", play()); 
+        i++; 
+    }); 
 
     let turn = 0; 
     const getBoard = () => board; 
     const getTurn = () => turn; 
-    const play = (index, player) => {
+    const play = (index) => {
         if (board[index].isEmpty()) {
-            board[index] = player; 
+            board[index] = getCurrentPlayer(); 
             turn++; 
             if (turn > 5) {
                 isWinner(); 
@@ -22,7 +29,7 @@ const gameboard = (() => {
             return intializeGame.player2.getToken(); 
         }
     }
-    return {getBoard, getTurn, play}; 
+    return {getBoard, getTurn, play, boardButtons}; 
 })(); 
 
 const gameController = (() => {
@@ -43,11 +50,6 @@ const intializeGame = (() => {
     const player1 = Player(player1name, "X"); 
     const player2name = prompt("Enter player 2 name:"); 
     const player2 = Player(player2name, "O"); 
-
-    for (let i = 0; i < 9; i++) {
-        gameboard.board[i] = document.getElementById(`${i}`); 
-        gameboard.board[i].addEventListener('click', gameboard.play(i, getCurrentPlayer())); 
-    }
 
     return {player1, player2}; 
 })(); 
