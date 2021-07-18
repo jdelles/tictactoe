@@ -1,19 +1,26 @@
+/**
+ * Builds the game board 
+ */
 const gameboard = (() => {
     const board = [9];  
     const boardButtons = Array.from(document.querySelectorAll(".board"));
     let i = 0; 
     boardButtons.forEach(button => {
         button.setAttribute("data-id", i);
-        // button.addEventListener("click", play()); 
         i++; 
     }); 
+    return {board, boardButtons}; 
+})(); 
 
-    let turn = 0; 
-    const getBoard = () => board; 
-    const getTurn = () => turn; 
+/**
+ * Controls the game play through each turn and checks for the winner
+ */
+const gameController = (() => {
     const play = (index) => {
-        if (board[index].isEmpty()) {
-            board[index] = getCurrentPlayer(); 
+        if (gameboard.board[index].isEmpty()) {
+            const token = getCurrentPlayer(); 
+            gameboard.board[index] = token; 
+            gameboard.boardButtons[index].textContent = token; 
             turn++; 
             if (turn > 5) {
                 isWinner(); 
@@ -23,33 +30,37 @@ const gameboard = (() => {
         }
     }
     const getCurrentPlayer = () => {
-        if (turn % 2 === 0) {
-            return intializeGame.player1.getToken(); 
+        if (gameboard.turn % 2 === 0) {
+            return setupPlayers.player1.getToken(); 
         } else {
-            return intializeGame.player2.getToken(); 
+            return setupPlayers.player2.getToken(); 
         }
     }
-    return {getBoard, getTurn, play, boardButtons}; 
+    const isWinner = () => {
+
+    }
+    return {play}; 
 })(); 
 
-const gameController = (() => {
-    
-})(); 
-
-const Player = (name, token) => {
-    let score = 0; 
-    const getName = () => name; 
-    const getToken = () => token; 
-    const getScore = () => score; 
-    const incrementScore = () => score++; 
-    return {getName, getToken, getScore, incrementScore}; 
+/**
+ * Player objects created with factory design pattern
+ * @param {*} name the player's name
+ * @param {*} token the player's game token
+ * @param {*} score the player's score
+ * @returns name, token and score
+ */
+const Player = (name, token, score) => {
+    return {name, token, score}
 }
 
-const intializeGame = (() => {
+/**
+ * Sets up the two players
+ * Currently uses JavaScript prompt() would like to eventually use a form
+ */
+const setupPlayers = (() => {
     const player1name = prompt("Enter player 1's name:"); 
-    const player1 = Player(player1name, "X"); 
+    const player1 = Player(player1name, "X", 0); 
     const player2name = prompt("Enter player 2 name:"); 
-    const player2 = Player(player2name, "O"); 
-
+    const player2 = Player(player2name, "O", 0); 
     return {player1, player2}; 
 })(); 
