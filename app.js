@@ -4,9 +4,10 @@
 const gameboard = (() => {
     const board = [];  
     for (let i = 0; i < 9; i++) {
-        board.push(""); 
+        board.push(" "); 
     } 
-    return {board}; 
+    let turn = 0; 
+    return {board, turn}; 
 })(); 
 
 /**
@@ -36,18 +37,34 @@ const setupPlayers = (() => {
  * Controls the game play through each turn and checks for the winner
  */
 const gameController = (() => {
-    let turn = 0; 
-    const getCurrentPlayer = () => {
+    const getCurrentPlayer = (turn) => {
         if (turn % 2 === 0) {
             return setupPlayers.player1; 
         } else {
             return setupPlayers.player2; 
         }
-    }
-    const isWinner = () => {
 
     }
-    return {turn, getCurrentPlayer, isWinner}
+    const isWinner = () => {
+        const board = Array.from(document.querySelectorAll(".board"));
+        let boardButtons = []; 
+        for (let i = 0; i < 9; i++) {
+            boardButtons.push(board[i].textContent); 
+        }
+        if ((boardButtons[0] === boardButtons[1] && boardButtons[0] === boardButtons[2] && boardButtons[0] != " ") ||
+            (boardButtons[0] === boardButtons[3] && boardButtons[0] === boardButtons[6] && boardButtons[0] != " ") ||
+            (boardButtons[0] === boardButtons[4] && boardButtons[0] === boardButtons[8] && boardButtons[4] != " ") ||
+            (boardButtons[1] === boardButtons[5] && boardButtons[1] === boardButtons[7] && boardButtons[4] != " ") ||
+            (boardButtons[2] === boardButtons[4] && boardButtons[2] === boardButtons[6] && boardButtons[4] != " ") ||
+            (boardButtons[3] === boardButtons[4] && boardButtons[3] === boardButtons[5] && boardButtons[4] != " ") ||
+            (boardButtons[2] === boardButtons[5] && boardButtons[2] === boardButtons[8] && boardButtons[8] != " ") ||
+            (boardButtons[6] === boardButtons[7] && boardButtons[6] === boardButtons[8] && boardButtons[8] != " ")) {
+                return true; 
+            } else {
+                return false; 
+            }
+    }
+    return {getCurrentPlayer, isWinner}
 })(); 
 
 
@@ -60,9 +77,13 @@ boardButtons.forEach(button => {
         if (button.textContent === "X" || button.textContent === "O") {
             alert("This space is already taken. Choose another."); 
         } else {
-            const playToken = gameController.getCurrentPlayer().token; 
+            const playToken = gameController.getCurrentPlayer(gameboard.turn).token; 
             button.textContent = playToken; 
-            gameController.turn++; 
+            gameboard.board[i] = playToken; 
+            gameboard.turn++; 
+            if (gameboard.turn >= 5 && gameController.isWinner()) {
+                console.log(playToken + " wins!"); 
+            }
         }
     }); 
     i++; 
