@@ -12,7 +12,6 @@ const gameboard = (() => {
         const button = document.querySelector(`.board[data-id="${index}"]`); 
         button.textContent = token; 
         board[index] = token; 
-        console.log(board[index]); 
         incrementTurn(); 
     }
 
@@ -83,10 +82,10 @@ const gameController = (() => {
             (gameboard.getPosition(3) === gameboard.getPosition(4) && gameboard.getPosition(3) === gameboard.getPosition(5) && gameboard.getPosition(4) != undefined) ||
             (gameboard.getPosition(2) === gameboard.getPosition(5) && gameboard.getPosition(2) === gameboard.getPosition(8) && gameboard.getPosition(8) != undefined) ||
             (gameboard.getPosition(6) === gameboard.getPosition(7) && gameboard.getPosition(6) === gameboard.getPosition(8) && gameboard.getPosition(8) != undefined)) {
-                return true; 
-            } else {
-                return false; 
-            }
+            return true; 
+        } else {
+            return false; 
+        }
     }
 
     const isTie = (turn) => {
