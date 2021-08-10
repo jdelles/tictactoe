@@ -30,3 +30,19 @@ button:hover {
     background: grey;
     cursor: pointer; 
 }
+
+#results, 
+#buttons {
+    width: 450px; 
+    margin: 0 auto; 
+    text-align: center;
+    font-size: 20px;  
+}
+
+#reset {
+    padding: 5px 10px;
+    margin-top: 10px;  
+    background-color: gray; 
+    color: white; 
+    border-radius: 5px; 
+}

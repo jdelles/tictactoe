@@ -12,14 +12,18 @@ const gameboard = (() => {
         const button = document.querySelector(`.board[data-id="${index}"]`); 
         button.textContent = token; 
         board[index] = token; 
+        console.log(turn + " " + Players.getCurrentPlayer(turn).name); 
+        gameController.isWinner()
         incrementTurn(); 
+        console.log(turn + " " + Players.getCurrentPlayer(turn).name); 
     }
 
     const newGame = () => {
-        const buttons = document.querySelectorAll('.board'); 
-        buttons.forEach(button => {
+        for (let i = 0; i < 9; i++) {
+            const button = document.querySelector(`.board[data-id="${i}"]`); 
             button.textContent = ""; 
-        });
+            board[i] = undefined; 
+        }
         turn = 0; 
     }
 
@@ -51,25 +55,29 @@ const Players = (() => {
 
     const player1name = prompt("Enter player 1's name:"); 
     const player1 = Player(player1name, "X", 0); 
-    
+    console.log(player1.name); 
+
     const player2name = prompt("Enter player 2 name:"); 
     const player2 = Player(player2name, "O", 0); 
+    console.log(player2.name); 
+
+    const getCurrentPlayer = (turn) => {
+        if (turn % 2 === 0) {
+            return player1; 
+        } else {
+            return player2; 
+        }
+
+    }
     
-    return {player1, player2}; 
+    return {getCurrentPlayer}; 
 })(); 
 
 /**
  * Controls the game play through each turn and checks for the winner
  */
 const gameController = (() => {
-    const getCurrentPlayer = (turn) => {
-        if (turn % 2 === 0) {
-            return Players.player1; 
-        } else {
-            return Players.player2; 
-        }
 
-    }
     const isWinner = () => {
         //  0 1 2
         //  3 4 5
@@ -82,18 +90,30 @@ const gameController = (() => {
             (gameboard.getPosition(3) === gameboard.getPosition(4) && gameboard.getPosition(3) === gameboard.getPosition(5) && gameboard.getPosition(4) != undefined) ||
             (gameboard.getPosition(2) === gameboard.getPosition(5) && gameboard.getPosition(2) === gameboard.getPosition(8) && gameboard.getPosition(8) != undefined) ||
             (gameboard.getPosition(6) === gameboard.getPosition(7) && gameboard.getPosition(6) === gameboard.getPosition(8) && gameboard.getPosition(8) != undefined)) {
+            displayWinner(); 
+            return true; 
+        } else {
+            isTie(gameboard.getTurn() + 1); 
+        }
+    }
+
+    const isTie = (turn) => {
+        if (turn >= 9) {
+            displayTie(); 
             return true; 
         } else {
             return false; 
         }
     }
 
-    const isTie = (turn) => {
-        if (!isWinner && turn >= 8) {
-            return true; 
-        } else {
-            return false; 
-        }
+    const displayWinner = () => {
+        const results = document.getElementById('results-text'); 
+        results.textContent = Players.getCurrentPlayer(gameboard.getTurn()).name + " wins!"; 
+    }
+
+    const displayTie = () =>  {
+        const results = document.getElementById('results-text'); 
+        results.textContent = "It's a tie!"; 
     }
 
     const addListeners = () => {
@@ -102,42 +122,24 @@ const gameController = (() => {
         boardButtons.forEach(button => {
             button.setAttribute("data-id", id);
             button.addEventListener('click', () => {
-                if (button.textContent === "X" || button.textContent === "O") {
-                    alert("This space is already taken. Choose another."); 
+                if (isWinner() || isTie(gameboard.getTurn())) {
+                    alert("Game over!"); 
+                } else if (button.textContent === "X" || button.textContent === "O") {
+                        alert("This space is already taken. Choose another."); 
                 } else {
-                    const playToken = gameController.getCurrentPlayer(gameboard.getTurn()).token; 
+                    const playToken = Players.getCurrentPlayer(gameboard.getTurn()).token; 
                     gameboard.setPosition(button.getAttribute("data-id"), playToken);  
-                    if (gameController.isWinner()) {
-                        console.log(playToken + " wins!"); 
-                    } else if (isTie(gameboard.getTurn())) {
-                        console.log("It's a tie!"); 
-                    }
                 }
             }); 
             id++; 
         });
+        const resetButton = document.getElementById('reset'); 
+        resetButton.addEventListener('click', () => {
+            const results = document.getElementById('results-text'); 
+            results.textContent = ""; 
+            gameboard.newGame(); 
+        });
     }
     addListeners(); 
-    return {getCurrentPlayer, isWinner}
+    return {isWinner, isTie}
 })(); 
-
-
-
-
-/**
- * Essentials /////////////////
- * 
- * DONE - Draw a board
- * DONE - Build functionality for user to interact with board
- * DONE - Store the X or O 
- * DONE - Check for win conditions / tie
- * Report back win conditions if met and end game
- * Report back tie if game ends with no win condition
- * Reset game
- * 
- * Additional //////////////////
- * Switch from Prompt to form - Store users name and use it in win reporting and keep track of games won
- * Build "AI" to play game randomly
- * Build smarter AI with min-max algorithm to never lose
- * Add score to keep track of how many games each player has won
- */
